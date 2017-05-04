@@ -1,0 +1,71 @@
+import RPi.GPIO as GPIO
+                
+
+#List of switches from left to right.
+switches = [12, 20, 6, 26]
+#Use the Broadcom pin mode
+GPIO.setmode(GPIO.BCM)
+#Sets up multiple gpio pins at once. (list of pins, input/output, the base state without input-off in this case)
+GPIO.setup(switches, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+#Initializes these values as false, for use later in the program.
+input1 = False
+input2 = False
+input3 = False
+input4 = False
+try:
+        while(True):
+                #Initially note that no switch is pressed
+                #This helps with switch debouncing
+                pressed = False
+                #so long as no switch is currently pressed
+                while (not pressed):
+                         #... we can check the status of each switch
+                         for i in range(len(switches)):
+                                #if one switch is pressed
+                                while (GPIO.input(switches[i]) == True):
+                                        
+                                        #note the index
+                                        val = i
+                                        #note that a switch has now been pressed
+                                                
+                                                
+                                        pressed = True
+                #Changes the input value of the button being pressed to the opposite
+                if(val == 0):
+                        input1 =  not input1
+                elif(val == 1):
+                        input2 =  not input2
+                elif(val == 2):
+                        input3 =  not input3
+                elif(val == 3):
+                        input4 =  not input4
+
+                #Each pair of if/else sets the associated bit to a 1 or a 0 depending on whether that input is true of false
+                if(input1):
+                        binary1 = "1"
+                else:
+                        binary1 = "0"
+                if(input2):
+                        binary2 = "1"
+                else:
+                        binary2 = "0"
+                if(input3):
+                        binary3 = "1"
+                else:
+                        binary3 = "0"
+                if(input4):
+                        binary4 = "1"
+                else:
+                        binary4 = "0"
+                #prints the four inputs one after the other.
+                print(binary1 + binary2 + binary3 + binary4)
+
+
+#detect Ctrl + C
+except KeyboardInterrupt:
+        #reset the GPIO pins
+        GPIO.cleanup()
+        print("\nReset")
+
+
