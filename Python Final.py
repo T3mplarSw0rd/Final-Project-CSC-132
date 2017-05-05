@@ -13,6 +13,17 @@ GPIO.setmode(GPIO.BCM)
 #Sets up multiple gpio pins at once. (list of pins, input/output, the base state without input-off in this case)
 GPIO.setup(switches, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
+GPIO.add_event_detect(i, GPIO.BOTH)
+
+GPIO.add_event_callback(12, my_callback_one)
+GPIO.add_event_callback(20, my_callback_two)
+GPIO.add_event_callback(6, my_callback_three)
+GPIO.add_event_callback(26, my_callback_four)
+
+def my_callback_one(12):
+    if GPIO.input(12):
+        input1 = not input1
+
 #Initializes these values as false, for use later in the program.
 input1 = False
 input2 = False
@@ -93,12 +104,15 @@ from Tkinter import *
 # note that this class is fully implemented with dictionaries as illustrated in the lesson "More on Data Structures"
 class Gates(object):
 	# the constructor
-	def __init__(self):
+	def __init__(self, name):
+        gName = name
+        gAnswer = ""
+        gCorrect = False
 
-        Answer = ""
-        Correct = False
-
-
+    def compare(self, solution, previous):
+        if self.gAnswer == solution:
+            if previous == True | self.gName == "G1":
+                gCorrect = True
 
 	# returns a string description of the room
 	def __str__(self):
@@ -128,9 +142,9 @@ class Game(Frame):
         solutionInput = "0000"
 	# creates the rooms
 	def createGates(self):
-        GatesList = [G1, G2, G3, G4]
+        GatesList = ["G1", "G2", "G3", "G4"]
         for i in range (len(GatesList)):
-                GatesList[i] = Gates()
+                GatesList[i] = Gates(i)
                 i.Answer = "{2:04b}".format(randint(0,16))
 
 	# sets up the GUI
@@ -185,6 +199,11 @@ class Game(Frame):
 
 	# processes the player's input
 	def process(self, event):
+        action = Game.player_input.get()
+        action = action.lower()
+
+        if action == "run" | "":
+
 
 ##########################################################
 # the default size of the GUI is 800x600
