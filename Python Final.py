@@ -12,70 +12,53 @@ switches = [12, 20, 6, 26]
 GPIO.setmode(GPIO.BCM)
 #Sets up multiple gpio pins at once. (list of pins, input/output, the base state without input-off in this case)
 GPIO.setup(switches, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+#Initializes these values as false, for use later in the program.
+input0 = False
+input1 = False
+input2 = False
+input3 = False
 
-GPIO.add_event_detect(i, GPIO.BOTH)
+def my_callback_one(12):
+    if GPIO.input(12):
+        input0 = not input0
+    if input0:
+        Game.binary0 = 1
+    else:
+        Game.binary0 = 0
+
+def my_callback_two(20):
+    if GPIO.input(20):
+        input1 = not input1
+    if input1:
+        Game.binary1 = 1
+    else:
+        Game.binary1 = 0
+
+def my_callback_three(6):
+    if GPIO.input(6):
+        input2 = not input2
+    if input2:
+        Game.binary2 = 1
+    else:
+        Game.binary2 = 0
+
+def my_callback_four(26):
+    if GPIO.input(26):
+        input3 = not input3
+    if input3:
+        Game.binary3 = 1
+    else:
+        Game.binary3 = 0
+
+GPIO.add_event_detect(12, GPIO.RISING)
+GPIO.add_event_detect(20, GPIO.RISING)
+GPIO.add_event_detect(6, GPIO.RISING)
+GPIO.add_event_detect(26, GPIO.RISING)
 
 GPIO.add_event_callback(12, my_callback_one)
 GPIO.add_event_callback(20, my_callback_two)
 GPIO.add_event_callback(6, my_callback_three)
 GPIO.add_event_callback(26, my_callback_four)
-
-def my_callback_one(12):
-    if GPIO.input(12):
-        input1 = not input1
-
-#Initializes these values as false, for use later in the program.
-input1 = False
-input2 = False
-input3 = False
-input4 = False
-try:
-        while(True):
-                #Initially note that no switch is pressed
-                #This helps with switch debouncing
-                pressed = False
-                #so long as no switch is currently pressed
-                while (not pressed):
-                         #... we can check the status of each switch
-                         for i in range(len(switches)):
-                                #if one switch is pressed
-                                while (GPIO.input(switches[i]) == True):
-
-                                        #note the index
-                                        val = i
-                                        #note that a switch has now been pressed
-
-
-                                        pressed = True
-                #Changes the input value of the button being pressed to the opposite
-                if(val == 0):
-                        input1 =  not input1
-                elif(val == 1):
-                        input2 =  not input2
-                elif(val == 2):
-                        input3 =  not input3
-                elif(val == 3):
-                        input4 =  not input4
-
-                #Each pair of if/else sets the associated bit to a 1 or a 0 depending on whether that input is true of false
-                if(input1):
-                        binary1 = "1"
-                else:
-                        binary1 = "0"
-                if(input2):
-                        binary2 = "1"
-                else:
-                        binary2 = "0"
-                if(input3):
-                        binary3 = "1"
-                else:
-                        binary3 = "0"
-                if(input4):
-                        binary4 = "1"
-                else:
-                        binary4 = "0"
-                #prints the four inputs one after the other.
-                Game.solutionInput = "{}{}{}{}".format(binary1, binary2, binary3, binary4)
 
 
 #detect Ctrl + C
@@ -139,9 +122,56 @@ class Game(Frame):
 	def __init__(self, parent):
 		# call the constructor in the superclass
 		Frame.__init__(self, parent)
-        solutionInput = "0000"
-	# creates the rooms
-	def createGates(self):
+
+        binary0 = 0
+        binary1 = 0
+        binary2 = 0
+        binary3 = 0
+        solutionInput = "{}{}{}{}".format(binary0,binary1,binary2,binary3)
+
+    @property
+    def binary0(self):
+        return self._binary0
+
+    @binary0.setter
+    def binary0(self, value):
+        self._binary0 = value
+
+    @property
+    def binary1(self):
+        return self._binary1
+
+    @binary1.setter
+    def binary1(self, value):
+        self._binary1 = value
+
+    @property
+    def binary2(self):
+        return self._binary2
+
+    @binary2.setter
+    def binary2(self, value):
+        self._binary2 = value
+
+    @property
+    def binary0(self):
+        return self._binary0
+
+    @binary3.setter
+    def binary3(self, value):
+        self._binary3 = value
+
+    @property
+    def solutionInput(self):
+        return self._solutionInput
+
+    @solutionInput.setter
+    def solutionInput(self, value):
+        self._solutionInput = value
+
+
+	# creates the Gates
+    def createGates(self):
         GatesList = ["G1", "G2", "G3", "G4"]
         for i in range (len(GatesList)):
                 GatesList[i] = Gates(i)
@@ -221,3 +251,4 @@ g.play()
 
 # wait for the window to close
 window.mainloop()
+GPIO.cleanup
