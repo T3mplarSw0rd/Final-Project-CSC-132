@@ -87,8 +87,7 @@ from Tkinter import *
 # note that this class is fully implemented with dictionaries as illustrated in the lesson "More on Data Structures"
 class Gates(object):
 	# the constructor
-	def __init__(self, name):
-        gName = name
+	def __init__(self):
         gAnswer = ""
         gCorrect = False
 
@@ -128,6 +127,7 @@ class Game(Frame):
         binary2 = 0
         binary3 = 0
         solutionInput = "{}{}{}{}".format(binary0,binary1,binary2,binary3)
+        GatesList = [G1, G2, G3, G4]
 
     @property
     def binary0(self):
@@ -172,9 +172,8 @@ class Game(Frame):
 
 	# creates the Gates
     def createGates(self):
-        GatesList = ["G1", "G2", "G3", "G4"]
         for i in range (len(GatesList)):
-                GatesList[i] = Gates(i)
+                Game.GatesList[i] = Gates(i)
                 i.Answer = "{2:04b}".format(randint(0,16))
 
 	# sets up the GUI
@@ -213,7 +212,7 @@ class Game(Frame):
         #Enables the text, clears it, sets it, and finally disables it
         Game.text.config(state=NORMAL)
         Game.text.delete("1.0", END)
-        Game.text.insert(END, "Your current input is " + Game.solutionInput
+        Game.text.insert(END, "Your current input is " + Game.solutionInput)
         Game.text.config(state=DISABLED)
 
 	# plays the game
@@ -233,6 +232,11 @@ class Game(Frame):
         action = action.lower()
 
         if action == "run" | "":
+            if Game.solutionInput == currentGate.gAnswer:
+                if Game.count == 3:
+                    
+                else:
+                    Game.count += 1
 
 
 ##########################################################
